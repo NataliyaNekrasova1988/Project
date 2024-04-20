@@ -1,3 +1,11 @@
+import pandas as pd, numpy as np, logging
+from sklearn.preprocessing import LabelEncoder
+from scipy.sparse import coo_matrix
+from sklearn.cluster import KMeans
+from sklearn.neighbors import NearestNeighbors
+import time, timeit
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 from flask import Flask, jsonify, request
 import timeit
 from collaborative_filtering import ClusterCollaborativeFiltering
