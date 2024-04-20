@@ -6,16 +6,12 @@ from sklearn.neighbors import NearestNeighbors
 import time, timeit
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-from flask import Flask, jsonify, request
 import timeit
 from collaborative_filtering import ClusterCollaborativeFiltering
-
-app = Flask(__name__)
-
    
 # Загрузка данных и подготовка:
 # Считывание двух CSV файлов: "rec-libimseti-dir.edges" и "info.csv" с помощью Pandas:
-df_ratings = pd.read_csv("rec-libimseti-dir.edges", delim_whitespace=True, skiprows=1, names=["id_from", "id_to", "rating"]).fillna(0)
+df_ratings = pd.read_csv("rec-libimseti-dir.edges", sep='\s+', skiprows=1, names=["id_from", "id_to", "rating"]).fillna(0)
 df_info = pd.read_csv('info.csv')
     
 # Предобработка данных:
@@ -44,6 +40,10 @@ k_neighbors = 10
     
 #Инициализация объекта ClusterCollaborativeFiltering с созданной разреженной матрицей, количеством кластеров и числом соседей:
 clustered_collab_filter = ClusterCollaborativeFiltering(user_item_matrix_sparse, k_clusters, k_neighbors)
+
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
 
 @app.route('/recommended_users/<int:user_id>')
 def get_recommended_users(user_id):
