@@ -57,12 +57,16 @@ app = Flask(__name__)
 
 @app.route('/recommended_users/<int:user_id>')
 def get_recommended_users(user_id):
+    user_id = int(user_id)  # Преобразуем user_id в int
     max_liked_users = clustered_collab_filter.find_max_liked_users(user_id)
+    max_liked_users = [int(x) for x in max_liked_users]
     return jsonify({'user_id': user_id, 'recommended_users': max_liked_users})
 
 @app.route('/potential_matches/<int:user_id>')
 def get_potential_matches(user_id):
+    user_id = int(user_id)  # Преобразуем user_id в int
     potential_matches = clustered_collab_filter.find_potential_matches(user_id)
+    potential_matches = [int(x) for x in potential_matches]
     return jsonify({'user_id': user_id, 'potential_matches': potential_matches})
 
 if __name__ == '__main__':
