@@ -20,7 +20,12 @@ df_info = df_info.rename(columns={' gender': 'gender'})
 #Преобразование категориальных данных в числовой формат с помощью LabelEncoder:
 label_encoder = LabelEncoder()
 df_info['gender'] = label_encoder.fit_transform(df_info['gender'])
-        
+
+#объединим два датасета по столбцам 'id_from' и 'id'
+df_ratings = pd.merge(df_ratings, df_info, left_on='id_from', right_on='id')
+#удалим из обновлённой таблицы лишний столбец 'id':
+df_ratings.drop('id', axis=1, inplace=True)
+                
 # Вычисление рейтинга
 # Предполагается, что рейтинг >= 6 означает лайк, иначе - дизлайк:
 threshold = 6
@@ -29,6 +34,11 @@ threshold = 6
 LIKE = 1
 DISLIKE = -1
 df_ratings['rating'] = np.where(df_ratings['rating'] >= threshold, LIKE, DISLIKE)
+
+#Преобразуем столбцы
+df_ratings['rating'] = df_ratings['rating'].astype(int)
+df_ratings['id_from'] = df_ratings['id_from'].astype(int)
+df_ratings['id_to'] = df_ratings['id_to'].astype(int)
     
 # Создание разреженной матрицы:
 user_item_matrix_sparse = coo_matrix((df_ratings['rating'], (df_ratings['id_from'], df_ratings['id_to']))).tocsr()
